@@ -6,6 +6,7 @@
       <section>
         <item>
           <attribute name="label">Settings</attribute>
+          <attribute name="action">app.settings</attribute>
         </item>
       </section>
       <section>

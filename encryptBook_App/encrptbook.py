@@ -6,6 +6,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gio
 from views.app_view import listbox_entities
 from views.about_view import about_page
+from views.settings_view import settings_page
 
 
 class MyWindow(Gtk.ApplicationWindow):
@@ -52,6 +53,13 @@ class MyApplication(Gtk.Application):
         about_action.connect("activate", self.about_callback)
         # added to the window
         self.add_action(about_action)
+
+        # action without a state created (name, parameter type)
+        settings_action = Gio.SimpleAction.new("settings", None)
+        # connected with the callback function
+        settings_action.connect("activate", self.settings_callback)
+        # added to the window
+        self.add_action(settings_action)
     
     # callback function for copy_action
     def quit_callback(self, action, parameter):
@@ -61,6 +69,11 @@ class MyApplication(Gtk.Application):
     def about_callback(self, action, parameter):
         print("\"About\" activated")
         about_page()
+    
+    def settings_callback(self, action, parameter):
+        print("\"Settings\" activated")
+        settings = settings_page()
+        settings.show_all()
 
 app = MyApplication()
 exit_status = app.run(sys.argv)
