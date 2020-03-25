@@ -5,12 +5,13 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gio
 from views.app_view import listbox_entities
+from views.about_view import about_page
 
 
 class MyWindow(Gtk.ApplicationWindow):
     def __init__(self, app):
         Gtk.Window.__init__(self, title="EncryptBook", application=app)
-        self.set_default_size(200, 200)
+        self.set_default_size(500, 200)
         listbox_entities(self)
 
 class MyApplication(Gtk.Application):
@@ -44,11 +45,22 @@ class MyApplication(Gtk.Application):
         quit_action.connect("activate", self.quit_callback)
         # added to the window
         self.add_action(quit_action)
+
+        # action without a state created (name, parameter type)
+        about_action = Gio.SimpleAction.new("about", None)
+        # connected with the callback function
+        about_action.connect("activate", self.about_callback)
+        # added to the window
+        self.add_action(about_action)
     
     # callback function for copy_action
     def quit_callback(self, action, parameter):
         print("\"Quit\" activated")
         sys.exit()
+    
+    def about_callback(self, action, parameter):
+        print("\"About\" activated")
+        about_page()
 
 app = MyApplication()
 exit_status = app.run(sys.argv)
