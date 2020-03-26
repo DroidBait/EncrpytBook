@@ -3,6 +3,10 @@ import sys
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+import configparser
+
+Config = configparser.ConfigParser()
+Config.read("./encryptBook_App/data/config.ini")
 
 class settings_page(Gtk.Window):
     def __init__(self):
@@ -22,7 +26,12 @@ class settings_page(Gtk.Window):
         orderByCombo = Gtk.ComboBoxText()
         orderByCombo.insert(0, "0", "First Name")
         orderByCombo.insert(1, "1", "Last Name")
-        orderByCombo.set_active(0)
+        if Config.get('SETTINGS', 'order_by') == 'last':
+                orderByCombo.set_active(1)
+            elif Config.get('SETTINGS', 'order_by') == 'first':
+                orderByCombo.set_active(0)
+            else:
+                orderByCombo.set_active(0)
         hbox.pack_start(label, True, True, 0)
         hbox.pack_start(orderByCombo, False, True, 0)
         listbox.add(orderByRow)
