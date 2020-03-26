@@ -27,11 +27,11 @@ class settings_page(Gtk.Window):
         orderByCombo.insert(0, "0", "First Name")
         orderByCombo.insert(1, "1", "Last Name")
         if Config.get('SETTINGS', 'order_by') == 'last':
-                orderByCombo.set_active(1)
-            elif Config.get('SETTINGS', 'order_by') == 'first':
-                orderByCombo.set_active(0)
-            else:
-                orderByCombo.set_active(0)
+            orderByCombo.set_active(1)
+        elif Config.get('SETTINGS', 'order_by') == 'first':
+            orderByCombo.set_active(0)
+        else:
+            orderByCombo.set_active(0)
         hbox.pack_start(label, True, True, 0)
         hbox.pack_start(orderByCombo, False, True, 0)
         listbox.add(orderByRow)
