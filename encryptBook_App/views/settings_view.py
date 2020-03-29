@@ -15,8 +15,6 @@ class settings_page(Gtk.Window):
 
 
     def __init__(self):
-        global sortValue
-        global orderByValue
         Gtk.Window.__init__(self, title="EncrpytBook Settings")
         self.set_default_size(300, 200)
         box_outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
@@ -36,14 +34,11 @@ class settings_page(Gtk.Window):
         orderByCombo.insert(1, "1", "Last Name")
         if Config.get('SETTINGS', 'order_by') == 'last':
             orderByCombo.set_active(1)
-            orderByValue = 'last'
         elif Config.get('SETTINGS', 'order_by') == 'first':
             orderByCombo.set_active(0)
-            orderByValue = 'first'
         else:
             print("Error reading order by setting")
             orderByCombo.set_active(0)
-            orderByValue = 'first'
         hbox.pack_start(label, True, True, 0)
         hbox.pack_start(orderByCombo, False, True, 0)
         listbox.add(orderByRow)

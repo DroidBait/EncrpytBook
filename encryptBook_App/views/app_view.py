@@ -21,7 +21,7 @@ def listbox_entities(self):
     box_outer.pack_start(listbox, True, True, 0)
 
     #get list of users from the entities json file
-    entities = import_entities();
+    entities = import_entities()
     #sort the list
     if Config.get('SETTINGS', 'alphabetically_sort') == 'ascending':
         entities.sort(reverse=False)
