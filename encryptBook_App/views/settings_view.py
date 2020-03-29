@@ -15,6 +15,10 @@ class settings_page(Gtk.Window):
 
 
     def __init__(self):
+        ####################
+        ## Create window  ##
+        ## Create listbox ##
+        ####################
         Gtk.Window.__init__(self, title="EncrpytBook Settings")
         self.set_default_size(300, 200)
         box_outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
@@ -24,6 +28,9 @@ class settings_page(Gtk.Window):
         listbox.set_selection_mode(Gtk.SelectionMode.NONE)
         box_outer.pack_start(listbox, True, True, 0)
 
+        #############################
+        ## Add order by to listbox ##
+        #############################
         orderByRow = Gtk.ListBoxRow()
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
         orderByRow.add(hbox)
@@ -43,6 +50,9 @@ class settings_page(Gtk.Window):
         hbox.pack_start(orderByCombo, False, True, 0)
         listbox.add(orderByRow)
 
+        ############################
+        ## Add sort by to listbox ##
+        ############################
         hbox2 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
         ascDesRow = Gtk.ListBoxRow()
         ascDesRow.add(hbox2)
@@ -62,12 +72,18 @@ class settings_page(Gtk.Window):
         hbox2.pack_start(sortCombo, False, False, 0)
         listbox.add(ascDesRow)
 
+        ################################
+        ## Add save button to listbox ##
+        ################################
         saveRow = Gtk.ListBoxRow()
         saveButton = Gtk.Button.new_with_label("Save")
         saveButton.connect("clicked", self.on_save_clicked)
         saveRow.add(saveButton)
         listbox.add(saveRow)
 
+    ###################################
+    ## Runs when save button clicked ##
+    ###################################
     def on_save_clicked(self, button):
         print("\"save\" was clicked")
         self.saveChangesToFile()
@@ -76,6 +92,10 @@ class settings_page(Gtk.Window):
         config = configparser.RawConfigParser()
         with open("./encryptBook_App/data/config.ini", "w") as configfile:
             config.add_section('SETTINGS')
+
+            ##############
+            ## order by ##
+            ##############
             print("Order by set to; ", orderByCombo.get_active_text())
             if orderByCombo.get_active_text() == "Last Name":
                 config.set('SETTINGS', 'order_by', 'last')
@@ -97,5 +117,8 @@ class settings_page(Gtk.Window):
                 print("Error in setting alphabetically by. Returning to default: Ascending")
                 config.set('SETTINGS', 'alphabetically_sort', 'ascending')
             
+            #####################
+            ## write to config ##
+            #####################
             config.write(configfile)
     
