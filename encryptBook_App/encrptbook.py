@@ -7,13 +7,22 @@ from gi.repository import Gtk, Gio
 from views.app_view import listbox_entities
 from views.about_view import about_page
 from views.settings_view import settings_page
-
+from views.main_window_view import Handler
 
 class MyWindow(Gtk.ApplicationWindow):
     def __init__(self, app):
         Gtk.Window.__init__(self, title="EncryptBook", application=app)
         self.set_default_size(500, 200)
         listbox_entities(self)
+        #mainView()
+        #builder = Gtk.Builder()
+        #builder.add_from_file("encryptBook_App/data/app_view.glade")
+        #builder.connect_signals(Handler())
+
+        #window = builder.get_object("window1")
+        #window.show_all()
+
+        #Gtk.main()
 
 class MyApplication(Gtk.Application):
 

@@ -10,9 +10,6 @@ Config = configparser.ConfigParser()
 Config.read("./encryptBook_App/data/config.ini")
 
 def listbox_entities(self):
-    #Gtk.Window.__init__(self, title="EncrpytBook")
-    #self.set_border_width(3)
-
     box_outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
     self.add(box_outer)
 
@@ -33,6 +30,10 @@ def listbox_entities(self):
         row = Gtk.ListBoxRow()
         row.add(Gtk.Label(item, xalign=0))
         listbox.add(row)
+    
+    #listbox.set_property("width-request", 100)
+    listbox.set_size_request(100,100)
+    
 
 def import_entities():
     # import from file
@@ -50,3 +51,8 @@ def import_entities():
             else:
                 lists.append(last + "," + first + " " + middle)
     return lists
+
+def listbox_edit(self):
+    #will show details of each enitity when selected from previous listbox
+    editList = Gtk.ListBox()
+    editList.set_selection_mode(Gtk.SelectionMode.NONE)
