@@ -26,13 +26,24 @@ def main(stdscr):
     contactPadPos = 0
     listLength = printMainView(stdscr, scrWidth, currentRow, contactPadPos)
     #time.sleep(3) #hopefully will be deprecated soon
+    if listLength > scrWidth.gety() - 7:
+        listLength = scrWidth.gety() - 7
+    startList = 0
+    endList = 0
+
     while 1:
         key = stdscr.getch()
 
         if key == curses.KEY_UP and currentRow > 0:
             currentRow -= 1
+            if currentRow == startList and startList > 0:
+                startList -= 1
+                endList -= 1
         elif key == curses.KEY_DOWN and currentRow < listLength - 1:
             currentRow += 1
+            if currentRow == listLength - 1 and endList <= len(menu): #pass back the length of the entities list
+                startList += 1
+                endList += 1
         elif key == curses.KEY_ENTER or key in [10, 13]:
             #print_center(stdscr, "You selected '{}'".format(menu[current_row]))
             tmp = 1
