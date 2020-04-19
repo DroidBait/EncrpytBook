@@ -23,14 +23,15 @@ def main(stdscr):
     ##############################
     ## Generate the two windows ##
     ##############################
-    listLength = printMainView(stdscr, scrWidth, currentRow)
+    contactPadPos = 0
+    listLength = printMainView(stdscr, scrWidth, currentRow, contactPadPos)
     #time.sleep(3) #hopefully will be deprecated soon
     while 1:
         key = stdscr.getch()
 
         if key == curses.KEY_UP and currentRow > 0:
             currentRow -= 1
-        elif key == curses.KEY_DOWN and currentRow < listLength-1:
+        elif key == curses.KEY_DOWN and currentRow < listLength - 1:
             currentRow += 1
         elif key == curses.KEY_ENTER or key in [10, 13]:
             #print_center(stdscr, "You selected '{}'".format(menu[current_row]))
@@ -39,21 +40,25 @@ def main(stdscr):
             # if user selected last row, exit the program
             #if currentRow == len(menu)-1:
                 #break
+        elif key == ord('q'):
+            break
 
-        listLength = printMainView(stdscr, scrWidth, currentRow)
+        listLength = printMainView(stdscr, scrWidth, currentRow, contactPadPos)
 
-def printMainView(stdscr, scrWidth, currentRow,):
+def printMainView(stdscr, scrWidth, currentRow, contactPadPos):
     ##############################
     ## Generate the two windows ##
     ##############################
     list1, listLength, selectedContact = list_view(scrWidth, currentRow) #get the list of known contacts
     contact = contact_view(scrWidth, selectedContact) #get the contact view which displays info about thu contacts
+    #contact = contact_view(scrWidth, selectedContact)
     list1.refresh() # display the list
-    contact.refresh() #display the contact info
-    return listLength, selectedContact
+    #contact.refresh(contactPadPos, 0, 0, scrWidth.getx25() + 1, scrWidth.gety() - 5, scrWidth.getx75()) #display the contact info
+    contact.refresh()
+    return listLength
 
 def list_view(scrWidth, currentRow):
-    listWindow = curses.newwin(scrWidth.gety(), scrWidth.getx25(), 0, 0)
+    listWindow = curses.newwin(scrWidth.gety() - 5, scrWidth.getx25(), 0, 0)
     #listWindow.addstr(5, 2, "hello world")
     listWindow.border(1)
     listLength, selectedContact = printList(listWindow, currentRow)
@@ -85,10 +90,31 @@ def printList(listWindow, currentSelectedRow): #will need to return the data of 
     return len(entities), selectedContact
 
 def contact_view(scrWidth, selectedContact):
-    contWindow = curses.newwin(scrWidth.gety(), scrWidth.getx75(), 0, scrWidth.getx25())
+    contWindow = curses.newwin(scrWidth.gety() - 5, scrWidth.getx75(), 0, scrWidth.getx25())
+    #contWindow = curses.newpad(scrWidth.gety() - 4, scrWidth.getx75())
     contWindow.border(1)
-    contWindow.addstr(5, 5, "contact view")
-    contWindow.addstr(6, 5, str(scrWidth.getx25()))
+    #contWindow.addstr(5, 5, "contact view")
+    #contWindow.addstr(6, 5, str(scrWidth.getx25()))
+    with open("./data/entities.json", "r") as file:
+        contacts = json.load(file)
+        for doc in contacts['entities']:
+            first = doc['first']
+            middle = doc['middle']
+            last = doc['last']
+            sortFirst = "" + first + " " + middle + " " + last
+            sortLast = last + ", " + first + " " + middle
+            if selectedContact == sortFirst or selectedContact == sortLast:
+                #print the data to the screen for viewing
+                contWindow.addstr(1, 1, "First Name: " + doc['first'])
+                contWindow.addstr(2, 1, "Middle Name: " + doc['middle'])
+                contWindow.addstr(3, 1, "Last Name: " + doc['last'])
+                contWindow.addstr(4, 1, "Home Phone: " + doc['homePhone'])
+                contWindow.addstr(5, 1, "Mobile Phone: " + doc['mobilePhone'])
+                contWindow.addstr(6, 1, "Address Line 1: " + doc['address1'])
+                contWindow.addstr(7, 1, "Address Line 2: " + doc['address2'])
+                contWindow.addstr(8, 1, "Address Line 3: " + doc['address3'])
+                contWindow.addstr(9, 1, "Postcode: " + doc['postcode'])
+                contWindow.addstr(10, 1, "Nickname: " + doc['nickname'])
     return contWindow
 
 def import_entities():
