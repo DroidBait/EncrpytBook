@@ -19,17 +19,20 @@ def main(stdscr):
     curses.curs_set(0)
     currentRow = 0
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
+    startList = 0
+    endList = 1
 
     ##############################
     ## Generate the two windows ##
     ##############################
     contactPadPos = 0
-    listLength = printMainView(stdscr, scrWidth, currentRow, contactPadPos)
+    listLength = printMainView(stdscr, scrWidth, currentRow, contactPadPos, startList, endList)
     #time.sleep(3) #hopefully will be deprecated soon
+    lengthEntitiesList = listLength
     if listLength > scrWidth.gety() - 7:
         listLength = scrWidth.gety() - 7
-    startList = 0
-    endList = 0
+    endList = listLength
+
 
     while 1:
         key = stdscr.getch()
@@ -41,7 +44,7 @@ def main(stdscr):
                 endList -= 1
         elif key == curses.KEY_DOWN and currentRow < listLength - 1:
             currentRow += 1
-            if currentRow == listLength - 1 and endList <= len(menu): #pass back the length of the entities list
+            if currentRow == listLength - 1 and endList <= lengthEntitiesList: #pass back the length of the entities list
                 startList += 1
                 endList += 1
         elif key == curses.KEY_ENTER or key in [10, 13]:
@@ -54,13 +57,13 @@ def main(stdscr):
         elif key == ord('q'):
             break
 
-        listLength = printMainView(stdscr, scrWidth, currentRow, contactPadPos)
+        listLength = printMainView(stdscr, scrWidth, currentRow, contactPadPos, startList, endList)
 
-def printMainView(stdscr, scrWidth, currentRow, contactPadPos):
+def printMainView(stdscr, scrWidth, currentRow, contactPadPos, startList, endList):
     ##############################
     ## Generate the two windows ##
     ##############################
-    list1, listLength, selectedContact = list_view(scrWidth, currentRow) #get the list of known contacts
+    list1, listLength, selectedContact = list_view(scrWidth, currentRow, startList, endList) #get the list of known contacts
     contact = contact_view(scrWidth, selectedContact) #get the contact view which displays info about thu contacts
     #contact = contact_view(scrWidth, selectedContact)
     list1.refresh() # display the list
@@ -68,14 +71,14 @@ def printMainView(stdscr, scrWidth, currentRow, contactPadPos):
     contact.refresh()
     return listLength
 
-def list_view(scrWidth, currentRow):
+def list_view(scrWidth, currentRow, startList, endList):
     listWindow = curses.newwin(scrWidth.gety() - 5, scrWidth.getx25(), 0, 0)
     #listWindow.addstr(5, 2, "hello world")
     listWindow.border(1)
-    listLength, selectedContact = printList(listWindow, currentRow)
+    listLength, selectedContact = printList(listWindow, currentRow, startList, endList)
     return listWindow, listLength, selectedContact
 
-def printList(listWindow, currentSelectedRow): #will need to return the data of the seleted row
+def printList(listWindow, currentSelectedRow, startList, endList): #will need to return the data of the seleted row
     entities = import_entities()
     #sort the list
     if Config.get('SETTINGS', 'alphabetically_sort') == 'ascending':
@@ -85,19 +88,21 @@ def printList(listWindow, currentSelectedRow): #will need to return the data of 
     else:
         entities.sort(reverse=False)
     loopNum = 0
-    
+    selectedContact = ""
+
     for idx, row in enumerate(entities):
-        if idx == currentSelectedRow:
-            listWindow.attron(curses.color_pair(1))
-            listWindow.addstr(loopNum + 1, 0, row)
-            listWindow.attroff(curses.color_pair(1))
-            #todo
-            #create some variables
-            #returns the first, last & middle name of selected row
-            selectedContact = row
-        else:
-            listWindow.addstr(loopNum + 1, 0, row)
-        loopNum += 1
+        if idx >= startList and idx < endList:
+            if idx == currentSelectedRow:
+                listWindow.attron(curses.color_pair(1))
+                listWindow.addstr(loopNum + 1, 0, row)
+                listWindow.attroff(curses.color_pair(1))
+                #todo
+                #create some variables
+                #returns the first, last & middle name of selected row
+                selectedContact = row
+            else:
+                listWindow.addstr(loopNum + 1, 0, row)
+            loopNum += 1
     return len(entities), selectedContact
 
 def contact_view(scrWidth, selectedContact):
@@ -144,5 +149,10 @@ def import_entities():
             else:
                 lists.append(last + "," + first + " " + middle)
     return lists
+
+def printBottomBar(scrWidth):
+    bar = curses.newwin(4, scrWidth.getx(), scrWidth.gety() - 4, 0)
+    bar.border(1)
+    return bar
 
 curses.wrapper(main)
