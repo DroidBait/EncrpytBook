@@ -66,9 +66,11 @@ def printMainView(stdscr, scrWidth, currentRow, contactPadPos, startList, endLis
     list1, listLength, selectedContact = list_view(scrWidth, currentRow, startList, endList) #get the list of known contacts
     contact = contact_view(scrWidth, selectedContact) #get the contact view which displays info about thu contacts
     #contact = contact_view(scrWidth, selectedContact)
+    bottomBar = printBottomBar(scrWidth)
     list1.refresh() # display the list
     #contact.refresh(contactPadPos, 0, 0, scrWidth.getx25() + 1, scrWidth.gety() - 5, scrWidth.getx75()) #display the contact info
     contact.refresh()
+    bottomBar.refresh()
     return listLength
 
 def list_view(scrWidth, currentRow, startList, endList):
@@ -153,6 +155,8 @@ def import_entities():
 def printBottomBar(scrWidth):
     bar = curses.newwin(4, scrWidth.getx(), scrWidth.gety() - 4, 0)
     bar.border(1)
+    bar.addstr(1, 1, "a: add")
+    bar.addstr(2, 1, "e: edit")
     return bar
 
 curses.wrapper(main)

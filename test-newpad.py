@@ -1,5 +1,6 @@
 import os
 import curses
+import curses.textpad
 
 def main(stdscr):
     h, w = stdscr.getmaxyx()
@@ -14,6 +15,7 @@ def main(stdscr):
         listLength = 8
     startList = 0
     endList = 8
+    entryMode = 'exit'
 
     while 1:
 
@@ -42,13 +44,15 @@ def main(stdscr):
                 #break
         elif key == ord('q'):
             break
+        elif key == ord('a'):
+            entryMode = 'start'
 
         
 
-        printScreen(h, w, currentRow, menu, listLength, startList, endList)
+        printScreen(h, w, currentRow, menu, listLength, startList, endList, entryMode)
 
 
-def printScreen(height, width, currentRow, menu, listLength, startList, endList):
+def printScreen(height, width, currentRow, menu, listLength, startList, endList, entryMode):
     #test
     #win = curses.newpad(10, 15)
     win = curses.newwin(10, 5, 0, 0)
@@ -56,9 +60,10 @@ def printScreen(height, width, currentRow, menu, listLength, startList, endList)
     #win.addstr(1, 1, "test")
     #menu = ["11", "22", "33", "44", "55", "66", "88", "99"]
     loopNum = 0
-    #for st in menu:
-    #    win.addstr(loopNum + 1, 0, st)
-    #    loopNum += 1
+
+    #########################
+    ## Working scroll code ##
+    #########################
     for idx, row in enumerate(menu):
         if idx >= startList and idx < endList:
             if idx == currentRow:
@@ -70,6 +75,34 @@ def printScreen(height, width, currentRow, menu, listLength, startList, endList)
             loopNum += 1
 
     #win.refresh(0, 0, 0, 0, 20, 20)
+
+    win2 = window2(entryMode)
+    win2.refresh()
     win.refresh()
+
+
+def window2(entryMode):
+    sss = curses.newwin(10, 30, 0, 10)
+    sss.border(1)
+    step = "step1"
+    curses.flushinp()
+    if entryMode == 'exit':
+        sss.addstr(1, 1, "Type a to start\n")
+    else:
+        if step == "step1":
+            curses.echo()
+            sss.addstr(1, 1, "step 1")
+            var1 = sss.getstr(2, 1, 10)
+            #sss.refresh()
+            sss.addstr(3, 1, var1)
+            #tb = curses.textpad.Textbox(sss, insert_mode=True)
+            #text = tb.edit()
+            #sss.addstr(4,1, text)
+            curses.noecho()
+        #sss.addstr(1, 1, "start entry")
+
+    return sss
+
+
 
 curses.wrapper(main)
