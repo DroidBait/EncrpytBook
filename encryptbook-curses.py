@@ -21,12 +21,14 @@ def main(stdscr):
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
     startList = 0
     endList = 1
+    entryMode = 'exit'
+    entryStep = 'step1'
 
     ##############################
     ## Generate the two windows ##
     ##############################
     contactPadPos = 0
-    listLength = printMainView(stdscr, scrWidth, currentRow, contactPadPos, startList, endList)
+    listLength = printMainView(stdscr, scrWidth, currentRow, contactPadPos, startList, endList, entryMode, entryStep)
     #time.sleep(3) #hopefully will be deprecated soon
     lengthEntitiesList = listLength
     if listLength > scrWidth.gety() - 7:
@@ -56,17 +58,19 @@ def main(stdscr):
                 #break
         elif key == ord('q'):
             break
+        elif key == ord('a'):
+            entryMode = 'add'
 
-        listLength = printMainView(stdscr, scrWidth, currentRow, contactPadPos, startList, endList)
+        listLength = printMainView(stdscr, scrWidth, currentRow, contactPadPos, startList, endList, entryMode, entryStep)
 
-def printMainView(stdscr, scrWidth, currentRow, contactPadPos, startList, endList):
+def printMainView(stdscr, scrWidth, currentRow, contactPadPos, startList, endList, entryMode, entryStep):
     ##############################
     ## Generate the two windows ##
     ##############################
     list1, listLength, selectedContact = list_view(scrWidth, currentRow, startList, endList) #get the list of known contacts
     contact = contact_view(scrWidth, selectedContact) #get the contact view which displays info about thu contacts
     #contact = contact_view(scrWidth, selectedContact)
-    bottomBar = printBottomBar(scrWidth)
+    bottomBar = printBottomBar(scrWidth, entryMode, entryStep)
     list1.refresh() # display the list
     #contact.refresh(contactPadPos, 0, 0, scrWidth.getx25() + 1, scrWidth.gety() - 5, scrWidth.getx75()) #display the contact info
     contact.refresh()
@@ -152,11 +156,38 @@ def import_entities():
                 lists.append(last + "," + first + " " + middle)
     return lists
 
-def printBottomBar(scrWidth):
+def printBottomBar(scrWidth, entryMode, entryStep):
     bar = curses.newwin(4, scrWidth.getx(), scrWidth.gety() - 4, 0)
     bar.border(1)
-    bar.addstr(1, 1, "a: add")
-    bar.addstr(2, 1, "e: edit")
+    if entryMode == 'exit':
+        bar.addstr(1, 1, "a: add")
+        bar.addstr(2, 1, "e: edit")
+    if entryMode != 'exit':
+        #if entryStep == 'step1':
+        #    bar.addstr(1, 1, 'Enter First Name:')
+        #    curses.echo()
+        #    fName = bar.getstr(2, 1, 20)
+        #    curses.noecho()
+        #    curses.cbreak()
+        #    bar.keypad(True)
+        #    entryStep = 'step2'
+        #elif entryStep == 'step2':
+        #    bar.addstr(1, 1, 'Enter Middle Name:')
+        bar.addstr(1,1, 'test 1111')
+        curses.echo()
+        ss = bar.getstr(2, 1, 20)
+        #curses.cbreak()
+        bar.keypad(1)
+        bar.refresh()
+        bar.addstr(1,1, 'test 2222')
+        bar.addstr(2,1,'')
+        sss = bar.getstr(2,1, 20)
+        bar.keypad(1)
+        bar.refresh()
+        curses.noecho()
+        entryMode = 'start'
+        bar.refresh()
+
     return bar
 
 curses.wrapper(main)

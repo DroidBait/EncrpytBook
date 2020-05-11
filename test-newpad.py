@@ -86,19 +86,23 @@ def window2(entryMode):
     sss.border(1)
     step = "step1"
     curses.flushinp()
-    if entryMode == 'exit':
-        sss.addstr(1, 1, "Type a to start\n")
-    else:
-        if step == "step1":
-            curses.echo()
-            sss.addstr(1, 1, "step 1")
-            var1 = sss.getstr(2, 1, 10)
-            #sss.refresh()
-            sss.addstr(3, 1, var1)
-            #tb = curses.textpad.Textbox(sss, insert_mode=True)
-            #text = tb.edit()
-            #sss.addstr(4,1, text)
-            curses.noecho()
+    while entryMode != 'exit':
+        if entryMode == 'exit':
+            sss.addstr(1, 1, "Type a to start\n")
+        else:
+            if step == "step1":
+                curses.echo()
+                sss.addstr(1, 1, "step 1")
+                var1 = sss.getstr(2, 1, 10)
+                #sss.refresh()
+                sss.addstr(3, 1, var1)
+                #tb = curses.textpad.Textbox(sss, insert_mode=True)
+                #text = tb.edit()
+                #sss.addstr(4,1, text)
+                curses.noecho()
+                curses.cbreak()
+                step = "step2"
+                entryMode = 'exit'
         #sss.addstr(1, 1, "start entry")
 
     return sss
