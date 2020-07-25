@@ -70,11 +70,11 @@ def printMainView(stdscr, scrWidth, currentRow, contactPadPos, startList, endLis
     list1, listLength, selectedContact = list_view(scrWidth, currentRow, startList, endList) #get the list of known contacts
     contact = contact_view(scrWidth, selectedContact) #get the contact view which displays info about thu contacts
     #contact = contact_view(scrWidth, selectedContact)
-    bottomBar = printBottomBar(scrWidth, entryMode, entryStep)
+    #bottomBar = printBottomBar(scrWidth, entryMode, entryStep)
     list1.refresh() # display the list
     #contact.refresh(contactPadPos, 0, 0, scrWidth.getx25() + 1, scrWidth.gety() - 5, scrWidth.getx75()) #display the contact info
     contact.refresh()
-    bottomBar.refresh()
+    #bottomBar.refresh()
     return listLength
 
 def list_view(scrWidth, currentRow, startList, endList):
